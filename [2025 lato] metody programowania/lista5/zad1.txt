@@ -1,0 +1,24 @@
+
+Rozważmy gramatykę nad alfabetem (zbiorem symboli terminalnych) złożonym z
+nawiasów otwierających i zamykających (Σ = {(,)}) oraz zbioru produkcji:
+P = {
+        S → (S)S,
+        S → (S,
+        S → ϵ
+     }
+
+Jak można opisać język generowany przez tą gramatykę?
+L(G) = (* )* (?
+
+Pokaż, że gramatyka ta jest niejednoznaczna - moze byc wiecej niz jedno wyprowadzenie slowa.
+S -> (S)S -> ((S)S -> (()S -> (()
+S -> (S -> ((S)S -> (()S -> (()
+
+Następnie zaproponuj jednoznaczną gramatykę generującą ten sam język.
+P = {
+        S → BU 
+        B → (B)B | ϵ
+        U → (S | ϵ
+    }
+
+S -> BU -> U -> (S -> (BU -> ((B)BU -> (()

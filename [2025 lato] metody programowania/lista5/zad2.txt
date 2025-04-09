@@ -1,0 +1,20 @@
+Zaproponuj wyrażenia regularne definiujące następujące języki nad alfabetem
+Σ = {0, 1}:
+
+• Wszystkie słowa, w których po wystąpieniu jedynki nie występują żadne zera.
+0*1*
+
+• Wszystkie słowa, w których po wystąpieniu jedynki nie występują żadne zera i zawierające
+co najmniej jedną jedynkę oraz co najmniej jedno zero.
+0+1+
+
+• Dopełnienie języka z poprzedniego podpunktu, tzn. wszystkie słowa nie
+będące postaci jak w poprzednim podpunkcie.
+^(0+1+)
+ε | 0* | 1* | .* 1 0 .*
+
+• Wszystkie słowa zawierajace parzystą liczbę zer i dowolną liczbę jedynek.
+((1)* (01*0))*
+
+• Wszystkie słowa w których nie występują dwie następujące po sobie jedynki.
+(ε | 0 | 0* 1? 0*)*

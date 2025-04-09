@@ -1,0 +1,21 @@
+# dune utop
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /Users/ahryncyszyn/.cache/dune/db
+# Workspace root: "/Users/ahryncyszyn/Desktop/metody programowania/lista6/zad3"
+# Auto-detected concurrency: 8
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /Users/ahryncyszyn/.opam/cs3110-2025sp/bin/ocamlc.opt -config > /var/folders/hq/zk502t8d7k7740zt2sb2t4380000gn/T/dune_045e67_output
+$ (cd _build/.sandbox/7fda6d43fb603cb5b15ab9b6708b8fee/default && /Users/ahryncyszyn/.opam/cs3110-2025sp/bin/menhir src/parser.mly --base src/parser --infer-write-query src/parser__mock.ml.mock)
+> File "src/parser.mly", line 58, characters 6-10:
+> Error: the token alias "()" was never declared.
+[1]
+$ (cd _build/default && /Users/ahryncyszyn/.opam/cs3110-2025sp/bin/ocamldep.opt -modules -impl src/main.ml) > _build/default/src/.let.objs/let__Main.impl.d
