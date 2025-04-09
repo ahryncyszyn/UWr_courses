@@ -1,0 +1,41 @@
+
+Zakładamy, że producent procesora nie dostarczył instrukcji skoku (czyli żadnej instrukcji
+postaci j*). Rozważmy procedurę switch_prob z poprzedniej listy. Podaj metodę zastąpienia instrukcji
+jmpq *0x4006f8(, %rsi, 8) ciągiem innych instrukcji. Nie można używać kodu samomodyfikującego się
+(ang. self-modifying code), ani dodatkowych rejestrów.
+
+pushq *0x4006f8(, %rsi, 8)
+ret
+
+Napisz kod w języku C, który wygeneruje instrukcję pośredniego wywołania procedury, 
+na przykład call *(%rdi,%rsi,8)
+
+typedef void (*ptr)(void)
+
+void f0()
+{
+    printf("f0");
+}
+
+void f1()
+{
+    printf("f1");
+}
+
+void f2()
+{
+    printf("f2");
+}
+
+void call (ptr* tab, int idx)
+{
+    tab[idx]();
+    return;
+}
+
+int main()
+{
+    ptr tab[] = {f0, f1, f2};
+    call (tab, 2);
+    return 0;
+}

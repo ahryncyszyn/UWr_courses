@@ -1,0 +1,24 @@
+
+decode:
+1 leaq (%rdi,%rsi), %rax    // x + y
+2 xorq %rax, %rdi           // x ^ (x + y) = y
+3 xorq %rax, %rsi           // y ^ (x + y) = x
+4 movq %rdi, %rax           
+5 andq %rsi, %rax           // x & y
+6 shrq $63, %rax            // x & y >> 63
+7 ret
+
+stany rejestrów linijka po linijce:
+0: %rdi = x, %rsi = y, %rax = --
+1: %rdi = x, %rsi = y, %rax = x + y
+2: %rdi = y, %rsi = y, %rax = x + y
+3: %rdi = y, %rsi = x, %rax = x + y
+4: %rdi = y, %rsi = x, %rax = y
+5: %rdi = y, %rsi = x, %rax = x & y
+6: %rdi = y, %rsi = x, %rax = x & y >> 63
+
+long decode(long x, long y)
+{
+    return (x & y) >> 63;
+}
+

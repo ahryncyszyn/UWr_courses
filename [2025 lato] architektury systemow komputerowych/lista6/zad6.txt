@@ -1,0 +1,52 @@
+
+- poniżej widnieje kod procedury o sygnaturze long puzzle6(void).
+
+puzzle6:
+2   subq $24, %rsp              // alokowanie 24 bitow pamieci na stosie
+3   movq %rsp, %rdi             // rdi = rsp - 24 
+4   call readlong               // puzzle6(&b)
+5   leaq 8(%rsp), %rdi          // rdi = rsp + 8 (wskazuje na a)
+6   call readlong               // puzzle6(&a)
+7   movq (%rsp), %rax           // rax = b
+8   cqto                        // rozszerzenie znaku z %rax do %rdx:%rax (128 bitow)
+9   idivq 8(%rsp)               // %rdx:%rax / a
+                                // %rdx = b % a
+                                // %rax = b / a
+10  xorl %eax, %eax             // rax = 0
+11  testq %rdx, %rdx            // rax & rax
+12  sete %al                    // 1 jezeli ZF, czyli rax == 0
+13  addq $24, %rsp              // zwolnienie pamieci na a i b
+14  ret
+
+- narysuj rekord aktywacji procedury puzzle6, podaj jego rozmiar i składowe
+
+-------------- STOS ----------------
+- adres powrotu do main()
+- padding?
+- a                      <-- rdi
+- b                      <-- rsp
+-------------------------------------
+- adres powrotu z wywolania readlong
+- stos dla funkcji readlong
+-------------------------------------
+- adres powrotu z wywolania readlong
+- stos dla funkcji readlong
+-------------------------------------
+
+- procedura readlong, która wczytuje ze standardowego wejścia liczbę całkowitą, 
+  została zdefiniowana w innej jednostce translacji. Jaka jest jej sygnatura?
+  - void readlong(long *num);
+  - bo movq %rsp, %rdi zapisuje wskaznik do pamieci jako argument
+
+- przetłumacz procedurę puzzle6 na język C i wytłumacz jednym zdaniem co ona robi
+
+long puzzle6(void) 
+{
+    long a, b;
+    readlong(&b);
+    readlong(&a);
+    long r = b % a;
+    return (r == 0);
+}
+
+- sprawdza, czy druga wczytana liczba jest podzielna przez pierwsza

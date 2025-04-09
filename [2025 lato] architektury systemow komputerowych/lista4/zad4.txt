@@ -1,0 +1,30 @@
+
+konwersja uint32_t między formatem little-endian i big-endian
+argument funkcji jest przekazany w rejestrze %edi, a wynik zwracany w rejestrze %eax
+
+big endian - najstarszy bajt najpierw 
+little endian - najmłodszy bajt najpierw
+
+little_to_big_endian:
+    mov    %edi, %eax         # kopiowanie bitow do eax
+    ror    $8, %eax           # obrót w prawo o 8 bitów (1 bajt)
+    and    $0xFF00FF00, %eax  # zamaskowanie odpowiednich bajtow (tylko 1 i 3 sa na swoim miejscu)
+    mov    %edi, %ecx         # kopiowanie bitow do ecx
+    rol    $8, %ecx           # Obrót w lewo o 8 bitów
+    and    $0x00FF00FF, %ecx  # znowu zamaskowanie (tylko 2 i 4 sa na swoim miejscu)
+    or     %ecx, %eax         # polaczenie wyniku
+    ret
+
+a b c d -- ror 8 --> d a b c
+a b c d -- rol 8 --> b c d a
+
+uint32_t rotate_r8(uint32_t x) 
+{
+    (x a b c) | (d x x x) = (d a b c)
+    return (x >> 8) | (x << 24);
+}
+
+rotate_r8(unsigned int):
+    mov     eax, edi
+    ror     eax, 8
+    ret

@@ -1,0 +1,79 @@
+
+- skompiluj poniższy kod źródłowy kompilatorem gcc z opcjami -Og -fomit-frame-pointer -fno-stack-protector i podejrzyj wygenerowany kod assemblera
+    -Og: optymalizacje przyjazne debugowaniu (nie pełne optymalizacje),
+    -fomit-frame-pointer: pomija rejestr ramki stosu (często %rbp),
+    -fno-stack-protector: brak ochrony stosu (np. przed nadpisywaniem buforów).
+
+long aframe(long n, long idx, long *q) 
+{
+    long i;
+    long *p[n];
+    p[n-1] = &i;
+    for (i = 0; i < n; i++)
+    {
+        p[i] = q;
+    } 
+    return *p[idx];
+}
+
+%rdi - n
+%rsi - idx
+%rdx - *q
+%rsp - wskaznik ramki stosu
+%rax = (15 + n*8) % (-16) - pamiec tablicy p wyrownana do 16
+%rbp - wskaznik ramki stosu (kopia na poczatku)
+%rcx - wskaznik do tablicy p[0]
+
+// uwaga - skladnia intela!!
+aframe(long, long, long*):
+        push    rbp                                 // callee saved rbp (rsp -= 8)
+        mov     rbp, rsp                            // kopia rsp w rbp
+        sub     rsp, 16                             // rsp -= 16 (miejsce na zmienna i)
+        lea     rax, [15+rdi*8]                     // rax = n * 8 + 15 
+                                                        - 15 zeby przygotowac do wyrownywania do 16
+        and     rax, -16                            // wyrownanie do wielokrotnosci 16
+                                                        - bo zeruje ostatnie 4 bity
+        sub     rsp, rax                            // przydzial tablicy p na stosie
+        mov     rcx, rsp                            // rcx - wskaznik do tablicy p[0]
+        lea     rax, [rbp-8]                        // rax = &i
+        mov     QWORD PTR [rsp-8+rdi*8], rax        // p[n-1] = &i
+        mov     QWORD PTR [rbp-8], 0                // i = 0
+        jmp     .L2
+.L3:
+        mov     QWORD PTR [rcx+rax*8], rdx          // p[n + i] = q
+        add     QWORD PTR [rbp-8], 1                // i++
+.L2:
+        mov     rax, QWORD PTR [rbp-8]              // rax = i 
+        cmp     rax, rdi                            // i - n
+        jl      .L3                                 // jump if less signed (i < n)
+        mov     rax, QWORD PTR [rcx+rsi*8]          // rax = p[0 + idx]
+        mov     rax, QWORD PTR [rax]                // rax = *p[idx]
+        leave                                       // pop esp czyli przywrócenie starego stack pointera
+        ret
+
+- wskaż w kodzie maszynowym instrukcje realizujące przydział tablicy p i narysuj rekord aktywacji procedury
+
+lea     rax, [15+rdi*8]                     
+        and     rax, -16                
+        sub     rsp, rax 
+
+-------- STOS ----------
+- kopia rbp               <-- %rbp
+- i (zmienna lokalna)     <-- %rax
+- p[n-1]                 
+- p[n-2]                 
+- p[n-3]                    
+    .
+    .
+    .                     
+- p[0]                    <-- %rsp, %rcx
+------------------------
+
+- wyjaśnij co robi instrukcja leave
+    - leave jest rownowazny z:
+    mov   %ebp, %esp
+    pop   %ebp  
+    - wyczyszczenie obecnej stack frame
+    - przywrócenie starego stack pointera
+
+

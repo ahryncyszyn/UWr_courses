@@ -1,0 +1,48 @@
+
+Zapisz w języku C funkcję o sygnaturze int puzzle(long x, unsigned n) której kod w asemblerze podano niżej. 
+Zakładamy, że parametr n jest niewiększy niż 64. 
+Przedstaw jednym zdaniem co robi ta procedura.
+- wartości x i y typu uint64_t są przekazywane przez rejestry %rdi i %rsi
+
+1 puzzle: testl %esi, %esi        // esi & esi <=> esi == 0
+2         je .L4
+3         xorl %edx, %edx        // edx -> 0
+4         xorl %eax, %eax        // eax -> 0
+5 .L3: movl %edi, %ecx           // zapisuje x pod ecx
+6      andl $1, %ecx             // izoluje najmlodszy bit
+7      addl %ecx, %eax           // dodaje najmlodszy bit do sumy
+8      sarq %rdi                 // shift arithmetic right
+9      incl %edx                 // count++
+10     cmpl %edx, %esi           // n - count
+11     jne .L3                   // jezeli n != count, wykonuje znowu petle
+12      ret
+13 .L4: movl %esi, %eax          // sum = 0
+14      ret
+
+%rdi - x
+%esi - n
+%edx - count
+%eax - sum
+%ecx - lastbit
+
+int puzzle(long x, unsigned n) 
+{
+    if (n == 0) 
+    {
+        return 0;
+    }
+
+    int count = 0;
+    int sum = 0;
+    do
+    {
+        unsigned lastbit = x;
+        lastbit = lastbit & 1;
+        sum += lastbit;
+        x = x >> 1;
+        count++;
+    } while(count != n);
+    return sum; 
+}
+
+- zlicza liczbę ustawionych bitów (1) w pierwszych n najmłodszych bitach liczby x

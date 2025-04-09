@@ -1,0 +1,32 @@
+* liczby zmiennopozycyjne 16-bitowe:
+    - znak - 1 bit 
+    - wykladnik - 5 bitow 
+    - mantysa - 10 bitow
+
+a = 3.984375 * 10^−1 = 0.3984376 = 0.0110011 = 1.10011 * 2^-2
+b = 3.4375 * 10^−1 = 0.34375 = 0.01011 = 1.011 * 2^-2
+c = 1.771 * 10^3 = 1771 = 11011101011 = 1.1011101011 * 2^10
+
+(a + b) + c = 
+= (1.10011 + 1.01100) * 2^-2 + 1.1011101011 * 2^10
+= (10.11111) * 2^-2 + 1.1011101011 * 2^10
+= 1.011111 * 2^-1 + 1.1011101011 * 2^10
+= (0.00000000001011111 + 1.1011101011) * 2^10
+= 1.10111010111011111 * 2^10
+= 1.1011101100 * 2^10 = 1772
+
+a + (b + c) = 
+= 1.10011 * 2^-2 + (0.00000000001011 + 1.1011101011) * 2^10
+= 1.10011 * 2^-2 + (1.10111010111011) * 2^10
+= 1.10011 * 2^-2 + 1.1011101100 * 2^10
+= (0.00000000000110011 + 1.1011101100) * 2^10
+= (1.10111011000110011) * 2^10
+= 1.1011101100(0110011) * 2^10
+= 1.1011101100 * 2^10 = 1772
+
+GUARD BIT - najmniej znaczacy bit wyniku 
+ROUND BIT - pierwszy bit ktory usuwamy przy zaokraganiu
+STICKY BIT - operacja OR z pozostalych bitow
+
+round = 1 oraz sticky = 1 oznacza ze reszta > 0.5, wiec zaokraglamy w gore
+round = 1 oraz sticky = 0 oznacza ze reszta = 0.5, wiec zaokraglamy do najblizszej parzystej

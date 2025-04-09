@@ -1,0 +1,81 @@
+wynik deasmeblacji procedury zadeklarowanej jako long pointless(long n, long *p):
+
+1 pointless:
+2   pushq %r14
+3   pushq %rbx
+4   pushq %rax
+5   movq %rsi, %r14             // zrobienie kopii lokalnych
+6   movq %rdi, %rbx
+7   testq %rdi, %rdi            // n & n
+8   jle .L1                     // if less or equal signed
+9   leaq (%rbx,%rbx), %rdi      // n = n * 2
+10  movq %rsp, %rsi             // saved by caller (przygotowanie do wywolania)
+11  callq pointless             // wywolanie rekurencyjna
+12  addq (%rsp), %rax           // res += wynik poprzedniego wywolania
+                                <--- adres powrotu tutaj wskazuje        
+13  jmp .L3 
+14 .L1: 
+    xorl %eax, %eax             // %rax = 0
+15 .L3: 
+    addq %rax, %rbx             // n += res
+16  movq %rbx, (%r14)           // *p = n
+17  addq $8, %rsp               // przesuniecie wskaznika stosu do gory
+18  popq %rbx                   //
+19  popq %r14                   //
+20  retq
+
+- zapisz w języku C kod odpowiadający tej procedurze
+
+%rdi = n
+%rsi = *p
+%r14 = *p (kopia lokalna)
+%rbx = n  (kopia lokalna)
+%rax = res
+%rsp = stack pointer
+%rsi = stack pointer (kopia lokalna)
+
+long pointless(long n, long *p)
+{
+    // zachowanie danych z %r14, %rbx, %rax na stosie
+    long res;
+    if (n <= 0)
+    {
+        res = 0;
+    }
+    else 
+    {
+        n = n * 2;
+        res = pointless(n, &res);
+        res += *p;
+    }
+
+    n += res;
+    *p = n;
+    return res;
+}
+
+- opisz zawartość jej rekordu aktywacji (ang. stack frame).
+
+-------- STOS ----------
+- kopia r14              
+- kopia rbx
+- kopia rax
+------------------------
+- adres powrotu
+- kopia r14              
+- kopia rbx
+- kopia rax
+------------------------
+
+- wskaż rejestry zapisane przez funkcję wołaną (ang. callee-saved registers), zmienne lokalne i miejsce, na które będzie wskazywał adres powrotu.
+    - calle-saved registers - $r14, %rbx, %rax  
+    - zmienne lokalne - %r14, %rbx, %rax, %rsi
+
+- uzasadnij, że wartość rejestru %rsp w wierszu 11 jest podzielna przez 16. Zastanów się czemu autorzy ABI zdecydowali się na taką konwencję.
+pushq --> %rsp -= 8   *  3
+callq --> %rsp -= 8 na adres powrotu
+
+rsp = (oryginalny %rsp - 32), wiec %rsp % 16 = 0
+
+- wydajnosc procesora
+- lepsza organizacja pamieci

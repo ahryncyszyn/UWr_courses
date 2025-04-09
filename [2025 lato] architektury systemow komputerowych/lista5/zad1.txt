@@ -1,0 +1,16 @@
+
+Zaimplementuj w asemblerze x86-64 funkcję liczącą wyrażenie x + y. Argumenty i wynik
+funkcji są 128-bitowymi liczbami całkowitymi ze znakiem i mogą się nie mieścić w pojedynczych rejestrach
+maszynowych. Zatem x jest przekazywany przez rejestry %rdi (starsze 64 bity) i %rsi (młodsze 64 bity),
+analogicznie argument y jest przekazywany przez %rdx i %rcx, a wynik jest zwracany w rejestrach %rdx i %rax.
+
+Domyślnie wskaźniki i całkowitoliczbowe argumenty funkcji są przekazywane kolejno w %rdi, %rsi, %rdx, %rcx, . . .
+
+%rdi - int_128 x (starsze)
+%rsi - int_128 x (mlodsze)
+%rdx - int_128 y (starsze)
+%rcx - int_128 y (mlodsze)
+
+add %rsi %rcx     // zaznacza flage OF i CF dla overflow
+addc %rdi %rdx    // uwzglednia flage CF w obliczaniach (dziala bo druga polowa to jak dodawanie unsigned)
+mov %rcx %rax     // przenosi wynik w poprawne miejsce

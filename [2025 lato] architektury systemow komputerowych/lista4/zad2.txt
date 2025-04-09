@@ -1,0 +1,32 @@
+
+Adres  Wartość Rejestr Wartość
+0x100  0xFF    %rax    0x100
+0x108  0xAB    %rcx    1
+0x110  0x13    %rdx    3
+0x118  0x11
+
+Wskaż miejsce, w którym zostanie umieszczony wynik działania instrukcji, oraz obliczoną wartość:
+
+1. addq %rcx,(%rax) = 0xFF + 1 = 0x100 
+    - pod adresem 0x100
+
+2. subq 16(%rax),%rdx = 3 - (0x100 + 16) = 3 - (0x110) = 3 - 0x13 = -0x10 
+    - w %rdx
+
+3. shrq $4,%rax = 0x100 >> 4 = 0x10 
+    - w %rax
+
+4. incq 16(%rax) = (0x100 + 16) + 1 = (0x110) + 1 = 0x13 + 1 = 0x14
+    - pod adresem 0x110
+
+5. decq %rcx = 1 - 1 = 0
+    - w %rcx
+
+6. imulq 8(%rax) = 0x100 * (0x100 + 8) = 0x100 * (0x108) = 0x100 * 0xAB = 0xAB00
+    - w %rax
+
+7. leaq 7(%rcx,%rcx,8),%rdx = 1 + 8*1 + 7 = 16 = 0x10
+    - w %rdx
+
+8. leaq 0xA(,%rdx,4),%rdx = 4 * 3 + 10 = 22 = 0x16
+    - w %rdx

@@ -1,0 +1,31 @@
+* int32_t x, y, z;
+* dx = (double) x;
+* ktore wyrazenia zawsze się obliczą do prawdy?
+
+1. (float)x == (float)dx --> PRAWDA
+- tozsame z (float) x == (float) (double) x
+- (double)x nie traci informacji, bo int ma 32 bity, a double (mantysa) 53
+- więc konwersja (float) po obu stronach będzie miała taki sam skuteks
+
+2. dx - dy == (double)(x - y) --> FALSZ
+- kontrprzykład: x = 1, y = INT_MIN
+- prawa strona odejmuje na intach, wiec dojdzie do przepełnienia
+P = 1 - INT_MIN = 1 + 2147483648 = 2147483649 mod 2147483647 = - 2147483647
+- lewa strona operuje na doublach, ktore maja wiekszy zakres, 
+  wiec nie dojdzie do przepełnienia
+L = 1 - INT_MIN = 1 + 2147483649 = 2147483649
+
+3. (dx + dy) + dz == dx + (dy + dz) --> FAŁSZ
+- kontrprzykład: x = 
+- ogolnie dodawanie na float/double nie jest łączne ze wzgledu na niedokładniosc w zaokrąglaniu
+- ale w tym przypadku double powstaly przez castowanie z intow
+- wiec nie maja zadnych czesci ułamowych -> dodawanie jest łaczne
+
+4. (dx * dy) * dz == dx * (dy * dz) --> PRAWDA
+- ogolnie dla float/double to nie jest prawda 
+- ale tutaj double powstaly z castowania z int
+- wiec nie maja czesci ułakowych -> mnozenie jest łączne
+
+5. dx / dx == dz / dz --> FALSZ
+- kontrprzykład: x = 1, y = 0
+- dx/dx = 1, dy/dy = -nan(ind)

@@ -1,0 +1,36 @@
+
+* zakladamy ze reprezentacja float f i g zostały załadowane do unint32_t x i y
+
+* wyrazenie ktore zmieni znak liczby f
+    x ^ 0x80000000
+- bit znaku znajduje sie na pierwszej pozycji
+- zeby go zmienic wystarczy uzyc xor tylko na tym bicie
+
+* wyrazenie ktore obliczy wartosc floor(log2(f)) typu int dla f w postaci znormalizowanej
+    ((x & 0x7F800000) >> 23) - 127
+- postac znormalizowana -> wykladnik nie jest ani 0 ani 255
+- maska wydziela jedynie wykładnik
+- >> 23 przesuwa go na poczatek liczby (bo float ma 23 bity mantysy na koncu)
+- (-127) odejmuje bias zeby zwrocic prawdziwy wykładnik
+- dziala bo log2(1.m * 2^x) = log2(1.m) + log2(2^x) = 0 + x
+
+* zwroci wartosc logiczna operacji f == g
+    (x == y) || ((a | b) == 0x80000000)
+- uwzglednia fakt ze 0 ma dwie reprezentacje bitowe
+
+* zwroci wartosc logiczna operacji x < y
+    (((~x & ~y & (x - y)) 
+    | (x & y & (y - x)) 
+    | (x & ~y)) & 0x80000000) != 0 
+    & ((x | y) != 0x80000000)
+
+- zeby x < y to przynajmniej jeden z trzech przypadkow musi byc spelniony:
+    - wazny jest tylko pierwszy bit (znaku) bo potem i tak maska go izoluje
+    - (~x & ~y & (x - y)) to 1 jezeli x > 0 i y > 0 i x < y
+        - bo (x - y) spowoduje przepełnienie, wiec pojawi sie 1 na bicie znaku
+    - (x & y & (y - x)) to 1 jezeli x < 0 i y < 0 i x > y (czyli -x < -y)
+        - analogicznie, przepełnienie da 1 na bicie znaku
+    - (x & ~y) to 1 jezeli x < 0 i y > 0
+- oraz x i y nie moga byc reprezentacjami zer: ((x | y) != 0x80000000)
+
+

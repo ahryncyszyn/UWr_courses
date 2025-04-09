@@ -1,0 +1,57 @@
+- poniżej widnieje kod wzajemnie rekurencyjnych procedur M i F typu long (*)(long x)
+- wskaż co najmniej dwa różne problemy w powyszym kodzie i napraw je
+
+%rdi - x
+%rsp - wskaznik stosu
+
+M:  pushq %rdi              // zapisywanie x na stosie
+2   testq %rdi, %rdi        // if x == 0
+3   je .L2                  // jumps if ZF
+4   leaq -1(%rdi), %rdi     // x = x - 1
+5   call M                  // rax = M(x-1)
+6   movq %rax, %rdi         // wynik M(x-1) przenosimy do %rdi
+7   call F                  // rax = F(M(x-1))
+8   movq (%rsp), %rdi       // przywrocenie x do %rdi
+    (add $8, %rsp)            // BLAD - brak dostosowania wskaznika stosu
+9   subq %rax, %rdi         // %rdi = x - F(M(x-1))
+10 .L2: 
+    movq %rdi, %rax         // %rax = x - F(M(x-1))
+11  ret
+
+%rdi = x
+%r12 = x (local copy)
+
+F:  (pushq %r12)              // BLAD - %r12 jest callee-saved
+    testq %rdi, %rdi        // if x == 0
+13  je .L3                  // jumps if ZF
+14  movq %rdi, %r12         // r12 = x
+15  leaq -1(%rdi), %rdi     // rdi = x - 1
+16  call F                  // rax = F(x-1)
+17  movq %rax, %rdi         // rdi = F(x-1)
+18  call M                  // rax = M(F(x-1))
+19  subq %rax, %r12         // r12 = x - M(F(x-1))
+20  movq %r12, %rax         // rax = x - M(F(x-1))
+21  ret
+22 .L3: 
+    movl $1, %eax           // res = 1
+    popq %r12               // przywrocenie %r12
+23  ret
+
+- przetłumacz kod do języka C
+
+long M(long x) 
+{
+    if (x == 0)
+    {
+        return x;
+    } 
+    return x - F(M(x - 1));
+}
+
+long F(long x) {
+    if (x == 0)
+    {
+        return 1;
+    }
+    return x - M(F(x - 1));
+}

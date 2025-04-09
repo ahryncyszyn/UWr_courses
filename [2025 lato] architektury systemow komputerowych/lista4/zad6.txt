@@ -1,0 +1,21 @@
+
+W rejestrze %rax przechowujemy osiem drukowalnych znaków w kodzie ASCII, 
+tj. każdy bajt ma wartość od 0x20 do 0x7f. 
+Podaj kod w asemblerze x86-64, który małą liczbą instrukcji przepisze w
+rejestrze %rax wszystkie małe litery na duże litery, a pozostałe znaki zostawi niezmienione.
+
+małe litery w ASCII: 0x61 - 0x7A (0110 0001 - 0111 1010)
+    - pierwsze 4 bity to 6 (0110) albo 7 (0111)
+duze litery w ASCII: 0x41 - 0x5A (0100 0001 - 0101 1010)
+    - pierwsze 4 bity to 4 (0100) albo 5 (0101)
+zamiana małych liter na wielkie: odjąć 32 (0x20), czyli trzeci najstarszy bit
+
+------------------------------------------------------------------------
+mov     %rax, %rsi                   // przeniesienie do innego rejestru dla obliczen
+sub     $0x6161616161616161, %rsi    // odjecie 'a'
+mov     %rax, %rdi
+sub     $0x7A7A7A7A7A7A7A7A, %rdi    // odjęcie 'z'
+not     %rdi                         // %rdi = ~(%rax - 'z')
+and     %rsi, %rdi                   // maska 'a' <= byte <= 'z'
+and     $0x2020202020202020, %rdi    // izolowaie bitu 5 z maski
+xor     %rdi, %rax                   // zamiana bitu 5 w bitach spelniajacych 'a' <= byte <= 'z'

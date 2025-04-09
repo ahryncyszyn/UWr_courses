@@ -1,0 +1,19 @@
+Zaimplementuj funkcję zdefiniowaną poniżej w asemblerze x86-64. 
+Taka procedura w języku C miałaby sygnaturę long cmp(uint64_t x, uint64_t y).
+- wartości x i y typu uint64_t są przekazywane przez rejestry %rdi i %rsi
+- rozwiązanie wzorcowe ma cztery wiersze (bez ret). Użyj instrukcji adc, sbb i neg.
+- wartości x i y typu uint64_t są przekazywane przez rejestry %rdi i %rsi
+
+cmp(x, y) = −1 gdy x < y
+             1 gdy x > y
+             0 gdy x = y
+setne dest - sprawdza ~ZF
+jb - skacze jezeli CF = 1
+
+.cmp:
+            cmp %rsi, %rdi                     // x - y
+            setne %rax                         // równe -> 0, różne -> 1   
+            jb .smaller                        // CF = 1, czyli x < y
+            ret
+smaller:    neg %rax                           // zamiana 1 na -1
+            ret

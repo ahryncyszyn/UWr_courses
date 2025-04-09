@@ -1,0 +1,28 @@
+- zaimplementuj poniższą funkcję w asemblerze x86-64. 
+- wartości x i y typu uint64_t są przekazywane przez rejestry %rdi i %rsi
+- wynik zwracany w rejestrze %rax. 
+- najpierw rozwiąż zadanie używając instrukcji skoku warunkowego
+- potem przepisz je używając instrukcji sbb (subtract with borrow)
+
+addu(x, y) = ULONG_MAX   dla x + y ≥ ULONG_MAX
+             x + y       w.p.p.
+
+addu:
+    add    %rdi, %rsi                 // x + y
+    jc     overflow                   // skacze jezeli CF = 1
+    mov    %rsi, %rax                 // kopiuje wynik do %rax
+    ret
+
+overflow:
+    mov    $0xFFFFFFFFFFFFFFFF, %rax  // ustawia wynik na ULONG_MAX
+    ret
+
+-----------------------------------------------------------------------
+
+addu:
+    add    %rdi, %rsi                  // x + y
+    sbb    %rcx, %rcx                  // %rcx = %rcx - 0 - CF (subtraction with borrow)
+    or     %rsi, %rcx                  // (x + y) || 0 nie zmienia wyniku dla braku overflow
+                                       // (x + y) || -1 ustawia wynik na 0xFFFFFFFFF...
+    mov    %rsi, %rax                  // przenosi wynik do rejestru %rax
+    ret

@@ -1,0 +1,57 @@
+
+Poniżej zamieszczono kod rekurencyjnej procedury o sygnaturze long puzzle2(long *a, long v, uint64_t s, uint64_t e). 
+Przetłumacz tę procedurę na język C, a następnie jednym zdaniem, powiedz co ona robi.
+
+%rdi - *a
+%rsi - v
+%rdx - s
+%rcx - e
+
+%rax - e (lokalna kopia)
+%rax - m
+%r8 - a + 8*res
+
+1 puzzle2:
+2       movq %rcx, %rax            // m = e
+3       subq %rdx, %rax            // m = e - s
+4       shrq %rax                  // m = (e - s) / 2 == shift logical right
+5       addq %rdx, %rax            // m = ((e - s) / 2) + s
+6       cmpq %rdx, %rcx            // s - e
+7       jb .L5                     // jump if below (CF) --> (s < e)
+8       movq (%rdi,%rax,8), %r8    // *(a + m)
+9       cmpq %rsi, %r8             // a[m] - v
+10      je .L10                    // jump if equal (ZF) --> a[m] == v
+11      jg .L11                    // jump if greater signed --> a[m] > v
+12      leaq 1(%rax), %rdx         // s = m + 1
+13      call puzzle2
+14 .L10: 
+        ret
+15 .L11: 
+        leaq -1(%rax), %rcx        // e = m - 1
+16      call puzzle2
+17      ret
+18 .L5: 
+        movq $-1, %eax
+19      ret
+
+wskazówka: z reguły procedurę puzzle2 woła się następująco: i = puzzle2(a, v, 0, n - 1)
+
+long puzzle2(long *a, long v, uint64_t s, uint64_t e) 
+{
+
+    uint64_t m = (s + e) / 2;
+
+    if (e < s)
+        return -1;
+
+    long mid = a[m];
+
+    if (mid == v)
+        return m;
+    else if (mid > v)
+        return puzzle2(a, v, s, m - 1);
+    else
+        return puzzle2(a, v, m + 1, e);
+}
+
+rekurencyjne wyszukiwanie binarne wartości v w posortowanej tablicy a

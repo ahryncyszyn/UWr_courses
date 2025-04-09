@@ -1,0 +1,21 @@
+
+* zastąp instrukcję dzielenia całkowitoliczbowego zmiennej n typu uint32_t 
+przez stałą 3 przy pomocy operacji mnożenia liczb typu uint64_t';
+            M = ((1ll << 32) + 2) / 3 - odwrotnosc 3
+1) uint64_t M = 0x55555556;
+2) uint32_t res = (n * M) >> 32;
+
+- 1/3 to liczba zmiennoprzecinkowa, a chcemy operowac na int
+- przesuniecie o 32 bity daje 2^32/3
+    - mozna interpretowac jako ostatnie 32 bity = czesc ułamkowa
+- mnozymy normalnie i na koniec przesuwany znowu o 32 bity w druga strone
+    - uzyskujemy tylko czesc calkowita, czesc ułamkowa odrzucona
+
+* przedstaw dowód poprawności swojego rozwiązania
+dla (n >= 0):
+res = floor((2^32 + 2)/3 * n/2^32) = floor(n/3 + (2n)/(3*2^32))
+- dla n < 2^31, (2n)/(3*2^32) < 1/3, wiec floor(n/3 + (2n)/(3*2^32)) == floor(n/3)
+
+
+* co należałoby zrobić, aby umieć wykonać podobną operację dla dowolnej innej 
+(ale też z góry ustalonej) liczby wymiernej?
