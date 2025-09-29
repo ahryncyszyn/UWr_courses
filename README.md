@@ -14,3 +14,8 @@
 - [Algorytmika praktyczna](https://github.com/ahryncyszyn/UWr_courses/tree/main/%5B2025%20lato%5D%20algortymika%20praktyczna)
 - [Kurs języka C++](https://github.com/ahryncyszyn/UWr_courses/tree/main/%5B2025%20lato%5D%20kurs%20j%C4%99zyka%20C%2B%2B)
 
+## Semestr 3
+- Matematyka dyskretna (MDM)
+- Analiza numeryczna
+- Systemy wbudowane
+- Metody implementacji algorytmów 
