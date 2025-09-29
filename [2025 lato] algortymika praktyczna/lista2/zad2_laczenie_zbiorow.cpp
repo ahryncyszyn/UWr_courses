@@ -35,7 +35,7 @@ void dfs(int v, int parent)
         }
     }
 
-    // Dodajemy własny kolor wierzchołka
+    // dodajemy własny kolor wierzchołka
     color_sets[v].insert(colors[v]);
     cout << v << " " << parent << endl;
 }

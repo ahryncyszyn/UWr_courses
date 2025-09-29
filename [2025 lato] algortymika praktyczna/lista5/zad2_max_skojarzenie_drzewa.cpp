@@ -2,35 +2,36 @@
 #include <vector>
 using namespace std;
 
-vector<int> visited;
-
-void find_max(int node, vector<vector<int>> &tree, vector<pair<int, int>> &dp, int N)
+typedef struct mypair
 {
-    if (visited[node]) return;
-    visited[node] = 1;
+    int max_matching_v_connected;
+    int max_matching_v_free;
+} mypair;
 
-    int max_assoc = 0;
-    int max_height1 = -1;
-    vector<int> sub_graph;
+void find_max(int node, int parent, vector<vector<int>> &tree, vector<mypair> &dp, int N)
+{
+    // 
+    int sum = 0;
     for (auto child : tree[node])
     {
-        if (visited[child]) continue;
-        find_max(child, tree, dp, N);  
-        
-        //matching_withou[start] += best_matching[i]
-        // sub_graph.pushback(child)        
+        if (child == parent) continue;
+        find_max(child, node, tree, dp, N);  
+        sum += max(dp[child].max_matching_v_free, dp[child].max_matching_v_connected);  
     }
+    dp[node].max_matching_v_connected = sum;
+    dp[node].max_matching_v_free = sum;
 
     int best_matching_with = 0;
-    for (auto i : sub_graph)
+    for (auto child : tree[node])
     {
-        // best_matching_with = max(best_matching_with, matching_without[start])
+        if (child == parent) continue;
+        int candidate = sum - max(dp[child].max_matching_v_free, dp[child].max_matching_v_connected)
+                        + dp[child].max_matching_v_connected + 1;
+        dp[node].max_matching_v_free = max(dp[child].max_matching_v_free, candidate);
     }
-    // wyznaczanie maksymalnej srednicy dla danego wierzcholka
-
 }
 
-// skojarzenie - zbior krawedzi, z ktorych zadne nie laczy tych samych wierzcholkow
+// skojarzenie - zbior krawedzi, z ktorych zadna nie laczy tych samych wierzcholkow
 int main()
 {
     int N;
@@ -46,12 +47,11 @@ int main()
         tree[b].push_back(a);
     }
 
-    // przechowuje dla kazdego wierzcholka pare
-    // (max_skojarzenie, max_skojarzenie_bez_korzenia)
-    vector<pair<int, int>> dp(N+1);
-    visited.assign(N+1, 0);
-    find_max(1, tree, dp, N);
+    // będziemy dynamicznie zliczać maksymalny rozmiar zbioru
+    // wierzchołkow gdy krawedz z rodzicem (danym v) jest uzyta lub nie
+    vector<mypair> dp(N + 1);
+    find_max(1, -1, tree, dp, N);
 
-    // wypisywanie maksymalnej srednicy drzewa (przechowywana w korzeniu)
-    cout << max(dp[1].first, dp[1].second);
+    // wynik to najwiekszy z dwoch zliczonych wersji
+    cout << max(dp[1].max_matching_v_connected, dp[1].max_matching_v_free);
 }
