@@ -1,0 +1,32 @@
+
+Przypomnij sobie definicję funkcji map. 
+Następnie pokaż, że dla dowolnych funkcji f i g oraz listy xs 
+zachodzi map f (map g xs) = map (fun x -> f (g x)) xs.
+
+let rec map f = function
+  | [] -> []
+  | h :: t -> (f h) :: (map f t)
+
+TW: map f (map g xs) = map (fun x -> f (g x)) xs
+
+baza indukcji:
+xs = []
+map f (map g xs) = map f [] = []
+map (fun x -> f (g x)) [] = []
+
+krok indukcyjny:
+załózmy, ze dla xs rownosc jest spełniona, czyli:  
+    map f (map g xs) = map (fun x -> f (g x)) xs
+pokazemy, ze dla x :: xs tez jest
+
+L: map f (map g x :: xs) 
+ = map f((gx) :: map g xs) 
+ = f(gx) :: (map f(map g xs))
+
+R: map (fun x -> f (g x)) (x :: xs) 
+ = ((fun x -> f (gx))x) :: map (fun x -> f (gx)) xs
+ = f(gx) :: map (fun x -> f (gx)) xs
+
+wiec korzystając z załozenia indukcyjnego L = P, czyli
+na mocy zasady indukcji twierdzenie zachodzi
+

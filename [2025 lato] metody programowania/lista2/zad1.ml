@@ -17,3 +17,4 @@ let rec fib_iter n =
 
 (* normalna rekursja fib 50 - czas to ponad minuta - złozonośc O(2^n) *)
 (* rekursja ogonowa fib_iter 50 - czas to jakas sekunda  - złozonośc O(n) *)
+

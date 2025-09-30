@@ -23,3 +23,4 @@ let rec delete key t =
         | _ ->
             let successor = min_value right in
             Node (left, successor, delete successor right)
+

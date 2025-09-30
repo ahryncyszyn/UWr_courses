@@ -30,4 +30,4 @@ let rec insert_bst x t =
        7
 
 (* które fragmenty drzewa t są współdzielone między drzewem t i insert_bst 7 t? *)
-- wszystko poza 7 
+- tylko elementy ktore nie zostaly odwiedzone w trakcie wstawiania 7

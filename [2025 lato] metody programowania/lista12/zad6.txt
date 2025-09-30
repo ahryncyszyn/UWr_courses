@@ -1,0 +1,10 @@
+Sformułuj zasadę indukcji dla drzew binarnych (etykietowanych w wierzchołkach).
+
+type 'a tree =
+  | Leaf                         (* puste drzewo *)
+  | Node of 'a * 'a tree * 'a tree   (* etykieta, lewe poddrzewo, prawe poddrzewo *)
+
+dla własności W jezeli:
+    W(leaf) zachodzi
+    W(t1) ^ W(t2) --> W(Node(t1, v, t2)) dla dowolnych t1, t2: 'a tree oraz dowolnego v
+to W zachodzi dla dowolnego t: a' tree

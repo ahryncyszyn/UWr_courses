@@ -1,0 +1,33 @@
+Pokaż, że dla dowolnej listy xs zachodzi rev' (rev' xs) = xs.
+
+let rec rev xs = 
+    match xs with 
+    | [] -> []
+    | x :: xs -> (rev xs) @ [x]
+
+let rev' xs = 
+    let rec aux acc xs =
+        match xs with 
+        | [] -> []
+        | x :: xs -> aux (x :: acc) xs
+    in aux [] xs
+
+Cel - aux [] (aux [] xs) = xs
+
+Lemat 1 - aux acc (aux [] xs) = xs @ acc
+
+baza indukcji:
+xs = []
+aux acc (aux [] []) = aux acc [] = []
+
+krok indukcyjny:
+zakladamy ze zachodzi dla xs, czyli:
+    aux acc (aux [] xs) = xs @ acc
+pokazemy ze zachodzi dla x :: xs
+
+aux acc (aux [] (x :: xs)) 
+= aux acc (aux (x :: []) xs)
+= aux acc (aux [x] xs)
+= aux acc ()
+= aux (x :: acc) (aux [] xs')
+= aux acc ()

@@ -1,0 +1,33 @@
+
+Rozważmy rozszerzenie języka o typ τ1 + τ2 (w OCamlu nazywa się on Either),
+który ma dwa konstruktory Left i Right, a eliminujemy go przez płytkie dopasowanie wzoraca, np.
+
+let swap = fun ( x : int + bool ) ->
+match x with
+| Left n -> Right n
+| Right b -> Left b
+in
+...
+Nie musisz implementować tego rozszerzenia, ale zaproponuj reguły (relacji)
+typowania dla nowych konstrukcji języka. Jakiemu spójnikowi logicznemu
+odpowiada typ τ1 + τ2?
+
+- typ Either przechowuje wartosc typu τ1 albo τ2, ale nie obie jednoczesnie
+- spójnik xor
+
+środowisko ⊢ term : typ
+
+Γ ⊢ e : τ1
+---------------------
+Γ ⊢ Left e : τ1 + τ2
+
+Γ ⊢ e : τ2
+---------------------
+Γ ⊢ Right e : τ1 + τ2
+
+Γ ⊢ e : τ1 + τ2
+Γ, x1 : τ1 ⊢ e1 : τ
+Γ, x2 : τ2 ⊢ e2 : τ
+────────────────────────────────────
+Γ ⊢ match e with Left x1 -> e1 | Right x2 -> e2 : τ
+
