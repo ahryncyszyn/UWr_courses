@@ -1,0 +1,9 @@
+
+1) tworzenie biblioteki dynamicznej:
+g++ -std=c++11 -fPIC -dynamiclib polynomial.cpp complex.cpp -o libpolynomial.dylib
+
+2) kompilowanie kodu z uzyciem bibilioteki dynamicznej:
+g++ main.cpp -std=c++11 -L. -lpolynomial -o main
+
+3) wykonywanie kodu
+./main

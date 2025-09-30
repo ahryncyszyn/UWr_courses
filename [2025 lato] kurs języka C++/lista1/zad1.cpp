@@ -1,5 +1,3 @@
-// Aleksandra Hryncyszyn, 353636
-
 #include <iostream>
 #include <vector>
 #include <string>

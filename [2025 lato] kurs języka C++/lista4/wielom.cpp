@@ -18,6 +18,10 @@ wielom::wielom (int st, const double wsp[]) : n(st)
     {
         throw std::invalid_argument("Stopień wielomianu nie może być ujemny");
     }
+    if ((sizeof(wsp) / sizeof(wsp[0])) != (n + 1))
+    {
+         throw std::invalid_argument("Liczba wspolczynnikow nie zgadza sie ze stopniem");
+    }
     if (st > 0 && wsp[st] == 0)
     {
         throw std::invalid_argument("Współczynnik przy najwyzszej potedze nie moze byc zerowy");
@@ -31,11 +35,11 @@ wielom::wielom (int st, const double wsp[]) : n(st)
 
 wielom::wielom (initializer_list<double> wsp) : n(wsp.size() - 1)
 {
-    if (n == 0)
+    if (n < 0)
     {
         throw std::invalid_argument("Stopień wielomianu nie może być ujemny");
     }
-    if (n > 1 && *std::prev(wsp.end()) == 0) 
+    if (*std::prev(wsp.end()) == 0) 
     {
         throw std::invalid_argument("Współczynnik przy najwyższej potędze nie może być zerowy");
     }
@@ -132,7 +136,7 @@ ostream& operator << (ostream &wy, const wielom &w)
 wielom operator + (const wielom &u, const wielom &v)
 {
     int max_n = std::max(u.n, v.n);
-    while (u.n == max_n && u.n == max_n 
+    while (u.n == max_n && v.n == max_n 
            && u.a[max_n] + v.a[max_n] == 0)
     {
         max_n--;
